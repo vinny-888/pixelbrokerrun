@@ -57,12 +57,14 @@ class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' });
     this.timer = 0;
+    this.bulletTimer = 0;
     this.secondTimer = 0;
     this.healthTimer = 0;
     // this.missileScore = 0;
     this.missileScoreCombo = 0;
     this.jumping = false;
     this.tapped = false;
+    this.bullets = 3;
   }
 
   resize(canvas) {
@@ -115,6 +117,24 @@ class Game extends Phaser.Scene {
       strokeThickness: 4,
       stroke: '#1f3331',
     }).setDepth(8);
+
+
+    this.bulletText = this.add.text(gameState.sceneWidth - 200, 75, 'Ammo: ', {
+      fontSize: '40px',
+      fill: '#ff0000',
+      fontFamily: '"Akaya Telivigala"',
+      strokeThickness: 4,
+      stroke: '#1f3331',
+    }).setDepth(8);
+
+    this.bulletValue = this.add.text(gameState.sceneWidth - 80, 75, `${this.bullets}`, {
+      fontSize: '40px',
+      fill: '#ff0000',
+      fontFamily: '"Akaya Telivigala"',
+      strokeThickness: 4,
+      stroke: '#1f3331',
+    }).setDepth(8);
+
 
     this.healthText = this.add.text(30, 25, 'Health: ', {
       fontSize: '30px',
@@ -180,23 +200,28 @@ class Game extends Phaser.Scene {
 
     // Coins SECTION
 
+    this.powerUp1Group = this.physics.add.group();
+
     this.ethGroup = this.physics.add.group();
     this.dodgeGroup = this.physics.add.group();
     this.btcGroup = this.physics.add.group();
     const createCoin = () => {
       let random = Math.random();
-      if(random <= 0.1){
-        this.createBirdDrop(this.btcGroup, 'btc');
-      }if(random > 0.1 && random <= 0.4){
+      if(random <= 0.05){
+        this.createBirdDrop(this.powerUp1Group, 'power_up_1');
+      } else if(random > 0.1 && random <= 0.15){
+        this.createBirdDrop(this.ethGroup, 'btc');
+      } else if(random > 0.15 && random <= 0.45){
         this.createBirdDrop(this.ethGroup, 'eth');
       } else {
         this.createBirdDrop(this.dodgeGroup, 'dodge');
       }
     };
 
-    this.physics.add.collider(this.dodgeGroup, this.groundGroup, (singleCoin) => {
-      singleCoin.setVelocityX(-200);
+    this.physics.add.collider(this.powerUp1Group, this.groundGroup, (powerUp) => {
+      powerUp.setVelocityX(-200);
     });
+
     this.physics.add.collider(this.ethGroup, this.groundGroup, (singleCoin) => {
       singleCoin.setVelocityX(-200);
     });
@@ -205,6 +230,14 @@ class Game extends Phaser.Scene {
     });
     this.physics.add.collider(this.dodgeGroup, this.groundGroup, (singleCoin) => {
       singleCoin.setVelocityX(-200);
+    });
+
+    this.physics.add.overlap(this.player, this.powerUp1Group, (player, powerup) => {
+      this.pickCoin.play();
+      powerup.destroy();
+      this.bullets += 3;
+      this.bulletValue.setText(`${this.bullets}`);
+      this.hoveringTextScore(player, '+3 Ammo! LFG!!!', '#0000ff', '#ff0000');
     });
 
     this.physics.add.overlap(this.player, this.dodgeGroup, (player, singleCoin) => {
@@ -272,12 +305,49 @@ class Game extends Phaser.Scene {
 
     this.missileGroup = this.physics.add.group();
 
-    this.explosion = this.add.sprite(-100, -100, 'explosion').setScale(0.5).setDepth(8);
+    this.bulletGroup = this.physics.add.group();
+
+    this.explosion = this.add.sprite(-100, -100, 'explosion').setScale(1).setDepth(8);
 
     this.createAnimations('explode', 'explosion', 0, 15, 0, 20);
 
     this.createAnimations('idle', 'explosion', 15, 15, -1, 1);
     this.explosion.play('idle', true);
+
+    this.physics.add.collider(this.bulletGroup, this.missileGroup, (bullet, missile) => {
+      console.log('Missile Hit');
+      missile.destroy();
+      bullet.destroy();
+
+      this.explodeSound.play();
+      this.explosion.x = bullet.x;
+      this.explosion.y = bullet.y;
+      this.explosion.play('explode', true);
+      this.killMissile.play();
+      // let score = 2 * this.missileScoreCombo;
+      this.hoveringTextScore(bullet, 'LFG!!!', '#000000', '#00ff00');
+
+      gameState.score += 1;
+      this.scoreValue.setText(`${gameState.score}`);
+    });
+
+    this.physics.add.collider(this.bulletGroup, this.spikeGroup, (bullet, spike) => {
+      console.log('Spike Hit');
+      spike.destroy();
+      bullet.destroy();
+
+      this.explodeSound.play();
+      this.explosion.x = bullet.x;
+      this.explosion.y = bullet.y;
+      this.explosion.play('explode', true);
+
+      this.killMissile.play();
+      // let score = 2 * this.missileScoreCombo;
+      this.hoveringTextScore(bullet, 'LFG!!!', '#000000', '#00ff00');
+
+      gameState.score += 1;
+      this.scoreValue.setText(`${gameState.score}`);
+    });
 
     this.physics.add.collider(this.player, this.missileGroup, (player, missile) => {
       if (player.body.touching.down && missile.body.touching.up) {
@@ -293,11 +363,25 @@ class Game extends Phaser.Scene {
           let score = 5 * this.missileScoreCombo;
           // this.missileScore += score;
           this.health += 5;
+
+          this.bullets += 2;
+          this.bulletValue.setText(`${this.bullets}`);
+
+          gameState.score += score;
+          this.scoreValue.setText(`${gameState.score}`);
+
           message = '+'+score + (this.missileScoreCombo > 1 ? ' ' + this.missileScoreCombo + 'x Combo!' : '');
         } else {
           let score = 2 * this.missileScoreCombo;
           // this.missileScore += score;
           this.health += 2;
+
+          this.bullets += 1;
+          this.bulletValue.setText(`${this.bullets}`);
+
+          gameState.score += score;
+          this.scoreValue.setText(`${gameState.score}`);
+
           message = '+'+ score + (this.missileScoreCombo > 1 ? ' ' + this.missileScoreCombo + 'x Combo!': '');
         }
         if(this.missileScoreCombo > 1){
@@ -333,6 +417,10 @@ class Game extends Phaser.Scene {
 
     this.physics.add.collider(this.birdGroup, this.boundGroup, (singleBird) => {
       singleBird.destroy();
+    });
+
+    this.physics.add.collider(this.powerUp1Group, this.boundGroup, (powerup) => {
+      powerup.destroy();
     });
 
     this.physics.add.collider(this.dodgeGroup, this.boundGroup, (singleCoin) => {
@@ -443,6 +531,14 @@ class Game extends Phaser.Scene {
     missile.setOffset(0, 150);
   }
 
+  createBullet(texture) {
+    const bullet = this.bulletGroup.create(this.player.x, this.player.y, texture);
+    bullet.setScale(0.1);
+    bullet.setDepth(6);
+    bullet.setSize(bullet.width, bullet.height - 300);
+    bullet.setOffset(0, 150);
+  }
+
   hoveringTextScore(player, message, strokeColor, fillColor = '#ffffff') {
     const singleScoreText = this.add.text(player.x, player.y, message, {
       fontSize: '30px',
@@ -511,7 +607,12 @@ class Game extends Phaser.Scene {
       child.x -= 10*f;
     });
 
+    this.bulletGroup.children.iterate((child) => {
+      child.x += 30*f;
+    });
+
     this.timer += delta;
+    this.bulletTimer += delta;
     if (this.timer >= 5000) {
       this.createMissile(gameState.sceneHeight - (520-415), 'missile');
       this.timer = 0;
@@ -533,6 +634,14 @@ class Game extends Phaser.Scene {
           this.jump = 0;
         }
         this.jump += 1;
+      }
+    }
+    if(this.cursors.space.isDown){
+      if (this.bulletTimer >= 300 && this.bullets > 0) {
+        this.bulletTimer = 0;
+        this.bullets--;
+        this.bulletValue.setText(`${this.bullets}`);
+        this.createBullet('bullet');
       }
     }
 
