@@ -7,6 +7,10 @@ const createPlatform = (group, spriteWidth, myTexture, dist = 0) => {
   const platform = group.create(spriteWidth + dist, gameState.sceneHeight, myTexture)
     .setOrigin(0, 1)
     .setScale(0.5);
+    if (myTexture === 'mountains') {
+      platform.setScale(0.75);
+    }
+    
   if (myTexture === 'ground') {
     platform.setImmovable(true);
     platform.setSize(platform.displayWidth * 2, platform.displayHeight - 50);
@@ -386,7 +390,7 @@ class Game extends Phaser.Scene {
     this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(scale);
 
     this.mountainGroup = this.add.group();
-    this.firstMountain = this.mountainGroup.create(0, gameState.sceneHeight, 'mountains').setScale(0.5).setOrigin(0, 1);
+    this.firstMountain = this.mountainGroup.create(0, gameState.sceneHeight, 'mountains').setScale(0.75).setOrigin(0, 1);
     this.mountainWidth = this.firstMountain.displayWidth;
     createPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 0);
     createPlatform(this.mountainGroup, this.mountainWidth, 'mountains', this.mountainWidth);
@@ -481,7 +485,7 @@ class Game extends Phaser.Scene {
     // at 60FPS in fixed time of 1/60 sec per step
     var f = (delta / (1000 / 60)); // 1000 ms / 60fps
 
-    moveBackgroundPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 1*f);
+    moveBackgroundPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 1.5*f);
     moveBackgroundPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 3*f);
     moveBackgroundPlatform(this.groundGroup, this.groundWidth, 'ground', 5*f);
 
