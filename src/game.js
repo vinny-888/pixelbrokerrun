@@ -472,14 +472,14 @@ class Game extends Phaser.Scene {
   update(time, delta) {
 
     // at 60FPS value of delta will be around 16.666
-    console.log("update -- time=" + time + " delta=" + delta);
+    // console.log("update -- time=" + time + " delta=" + delta);
     
     // pixel steps 0..2..4..6..8../..32 in fixed time of 1/60 sec per step
     var f = (delta / (1000 / 60)); // 1000 ms / 60fps
 
     moveBackgroundPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 1*f);
-    moveBackgroundPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 3*f);
-    moveBackgroundPlatform(this.groundGroup, this.groundWidth, 'ground', 8*f);
+    moveBackgroundPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 2.8*f);
+    moveBackgroundPlatform(this.groundGroup, this.groundWidth, 'ground', 9*f);
 
     if (this.health <= 0) {
       // const myUrl = `${fetchScoreData.apiUrl + fetchScoreData.apiKey}/scores`;
