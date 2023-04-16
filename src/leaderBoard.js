@@ -36,16 +36,16 @@ class LeaderBoard extends Phaser.Scene {
         myScores.sort((a, b) => b.score - a.score);
 
         for (let i = 0; i < myScores.length; i += 1) {
-          if (i >= 8) {
+          if (i >= 10) {
             break;
           }
-          height += 50;
-          setText(this, gameState.sceneWidth / 4 + 10, height, `${i + 1}.  ${myScores[i].user}`, '30px', '#ffffff', '#0000ff', 0, 0.5);
-          setText(this, (gameState.sceneWidth * 3) / 4 - 10, height, myScores[i].score.toString(), '30px', '#ffffff', '#000000', 1, 0.5);
+          height += 40;
+          setText(this, gameState.sceneWidth / 4 + 10, height, `${i + 1}.  ${myScores[i].user}`, '24px', '#ffffff', '#0000ff', 0, 0.5);
+          setText(this, (gameState.sceneWidth * 3) / 4 - 10, height, myScores[i].score.toString(), '24px', '#ffffff', '#000000', 1, 0.5);
         }
       }).catch(() => {
         this.fetchingScores.destroy();
-        setText(this, gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'failed to collect Scores!', '30px', '#ffffff', '#ff0000', 0.5, 0.5);
+        setText(this, gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'failed to collect Scores!', '24px', '#ffffff', '#ff0000', 0.5, 0.5);
       });
 
     const backBtn = new CustomButton(this, gameState.sceneWidth - 100, gameState.sceneHeight - 50, 'mainMenu', 'mainMenuHover');

@@ -122,11 +122,11 @@ class Preload extends Phaser.Scene {
   create() {
     this.add.image(this.width / 2, this.height / 2, 'logo').setScale(1.7);
 
-    this.message = this.add.text(this.scale.width / 2, 30, 'PRESS "ENTER" TO CONTINUE TO MAIN MENU', {
+    this.message = this.add.text(this.scale.width / 2 + 100, 30, 'PRESS "ENTER" TO CONTINUE TO MAIN MENU', {
       fontSize: '25px',
       fill: '#ffffff',
       fontFamily: '"Akaya Telivigala"',
-    }).setOrigin(0.5);
+    }).setOrigin(0.3);
 
     this.message.setAlpha(0);
 
