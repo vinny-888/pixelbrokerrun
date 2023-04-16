@@ -103,14 +103,14 @@ class Preload extends Phaser.Scene {
     this.load.image('missile', prefix+'/assets/missile.png');
     this.load.image('missile2', prefix+'/assets/missile2.png');
 
-    this.load.audio('hoverBtnSound', prefix+'/assets/rollover1.ogg');
-    this.load.audio('clickBtnSound', prefix+'/assets/switch3.ogg');
+    this.load.audio('hoverBtnSound', prefix+'/assets/rollover1.mp3');
+    this.load.audio('clickBtnSound', prefix+'/assets/switch3.mp3');
 
     this.load.audio('theme1', prefix+'/assets/theme1.mp3');
     this.load.audio('theme2', prefix+'/assets/theme2.mp3');
     this.load.audio('pickCoin', prefix+'/assets/pickCoin.wav');
     this.load.audio('explosion', prefix+'/assets/explode.wav');
-    this.load.audio('killMissile', prefix+'/assets/killMissile.ogg');
+    this.load.audio('killMissile', prefix+'/assets/killMissile.mp3');
     this.load.audio('jumpSound', prefix+'/assets/jumpSound.mp3');
     this.load.audio('spikeSound', prefix+'/assets/spikeSound.mp3');
 

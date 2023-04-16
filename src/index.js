@@ -22,6 +22,13 @@ const config = {
       debug: false,
     },
   },
+  // Allows Phaser canvas to be responsive to browser sizing
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 960,
+    height: 520,
+  },
   dom: {
     createContainer: true,
   },
@@ -33,6 +40,13 @@ const config = {
         mapping: 'rexGestures'
     },
     ]
+  },
+  callbacks: {
+    postBoot: function (game) {
+      // In v3.15, you have to override Phaser's default styles
+      game.canvas.style.width = '100%';
+      game.canvas.style.height = '100%';
+    }
   }
 };
 

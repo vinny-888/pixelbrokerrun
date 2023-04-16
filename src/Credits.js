@@ -6,8 +6,8 @@ class Credits extends Phaser.Scene {
   constructor() {
     super({ key: 'Credits' });
   }
-  resize() {
-    var canvas = this.game.canvas, width = window.innerWidth, height = window.innerHeight;
+  resize(canvas) {
+    var width = window.innerWidth, height = window.innerHeight;
     var wratio = width / height, ratio = canvas.width / canvas.height;
 
     if (wratio < ratio) {
@@ -19,8 +19,10 @@ class Credits extends Phaser.Scene {
     }
   }
   create() {
-    window.addEventListener('resize', this.resize);
-    this.resize();
+    this.canvas = this.game.canvas;
+    var _this = this;
+    window.addEventListener('resize', ()=>{_this.resize(_this.canvas)});
+    this.resize(_this.canvas);
     this.width = this.scale.width;
     this.height = this.scale.height;
 
