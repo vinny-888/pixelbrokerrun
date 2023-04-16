@@ -23,7 +23,7 @@ class LeaderBoard extends Phaser.Scene {
     this.add.rectangle(gameState.sceneWidth / 4, 0, gameState.sceneWidth / 2,
       gameState.sceneHeight, 0x000000, 0.8).setOrigin(0);
 
-    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'logo2').setScale(1.7).setAlpha(1);
+    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'logo2').setScale(1.7).setAlpha(0);
 
     setText(this, gameState.sceneWidth / 2, 25, 'Leader Board', '50px', '#ffffff', '#00ff00', 0.5);
 
