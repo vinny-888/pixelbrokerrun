@@ -30,7 +30,7 @@ class Options extends Phaser.Scene {
     this.hoverSound = this.sound.add('hoverBtnSound', { loop: false });
     this.clickSound = this.sound.add('clickBtnSound', { loop: false });
 
-    this.add.image(this.width / 2, this.height / 2, 'sky').setScale(0.5);
+    this.add.image(this.width / 2, this.height / 2, 'sky').setScale(1920/gameState.sceneWidth);
 
     const firstCheckBox = this.add.image(this.width / 4, this.height / 2 - 100, 'checkbox').setScale(1.5);
     const firstTick = this.add.image(this.width / 4, this.height / 2 - 100, 'tick').setScale(1.5);

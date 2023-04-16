@@ -39,7 +39,7 @@ class GameOver extends Phaser.Scene {
 
     playStopAudio(gameState.music, gameState.theme1);
 
-    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(0.5);
+    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(1920/gameState.sceneWidth);
 
     const heightDet = 100;
 

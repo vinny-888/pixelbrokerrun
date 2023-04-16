@@ -28,7 +28,7 @@ class Menu extends Phaser.Scene {
     this.width = this.scale.width;
     this.height = this.scale.height;
 
-    this.add.image(this.width / 2, this.height / 2, 'sky').setScale(0.5);
+    this.add.image(this.width / 2, this.height / 2, 'sky').setScale(1920/gameState.sceneWidth);
     this.add.image(this.width / 2, this.height / 2, 'logo2').setAlpha(1).setScale(1.7);
 
     this.hoverSound = this.sound.add('hoverBtnSound', { loop: false });

@@ -24,7 +24,7 @@ const createPlatform = (group, spriteWidth, myTexture, dist = 0) => {
 };
 
 const updatePlatform = (group, spriteWidth, myTexture, dist = 0) => {
-  const child = group.get(spriteWidth - dist, gameState.sceneHeight, myTexture);
+  const child = group.get(spriteWidth*2, gameState.sceneHeight, myTexture);
   child.setVisible(true);
   child.setActive(true);
   switch (myTexture) {
@@ -96,7 +96,7 @@ class Game extends Phaser.Scene {
     gameState.score = 0;
     this.health = 300;
 
-    this.scoreText = this.add.text(50, 25, 'Crypto: ', {
+    this.scoreText = this.add.text(gameState.sceneWidth - 200, 25, 'Crypto: ', {
       fontSize: '40px',
       fill: '#9bfff5',
       fontFamily: '"Akaya Telivigala"',
@@ -104,7 +104,7 @@ class Game extends Phaser.Scene {
       stroke: '#1f3331',
     }).setDepth(8);
 
-    this.scoreValue = this.add.text(170, 25, `${gameState.score}`, {
+    this.scoreValue = this.add.text(gameState.sceneWidth - 80, 25, `${gameState.score}`, {
       fontSize: '40px',
       fill: '#9bfff5',
       fontFamily: '"Akaya Telivigala"',
@@ -112,7 +112,7 @@ class Game extends Phaser.Scene {
       stroke: '#1f3331',
     }).setDepth(8);
 
-    this.healthText = this.add.text(50, 75, 'Health: ', {
+    this.healthText = this.add.text(30, 25, 'Health: ', {
       fontSize: '30px',
       fill: '#9bfff5',
       strokeThickness: 4,
@@ -127,10 +127,10 @@ class Game extends Phaser.Scene {
     this.progressBar.setDepth(8);
 
     this.progressBox.lineStyle(3, 0x0275d8, 1);
-    this.progressBox.strokeRect(170, 95, this.health, 10);
+    this.progressBox.strokeRect(150, 45, this.health, 10);
 
     this.progressBar.fillStyle(0x9bfff5, 1);
-    this.progressBar.fillRect(170, 95, this.health, 10);
+    this.progressBar.fillRect(150, 45, this.health, 10);
 
 
     this.addGameBackground();
@@ -157,7 +157,7 @@ class Game extends Phaser.Scene {
     this.birdGroup = this.physics.add.group();
 
     const createBird = () => {
-      const myY = Phaser.Math.Between(100, 300);
+      const myY = Phaser.Math.Between(gameState.sceneHeight - (520-100), gameState.sceneHeight - (520-300));
       const bird = this.birdGroup.create(gameState.sceneWidth + 100, myY, 'bird').setScale(0.3);
       bird.setVelocityX(-100);
       bird.flipX = true;
@@ -358,7 +358,7 @@ class Game extends Phaser.Scene {
       this.health -= 1;
       this.progressBar.clear();
       this.progressBar.fillStyle(0x63ccc1, 1);
-      this.progressBar.fillRect(170, 95, this.health, 10);
+      this.progressBar.fillRect(150, 45, this.health, 10);
       this.healthTimer = 0;
     };
 
@@ -382,17 +382,22 @@ class Game extends Phaser.Scene {
   }
 
   addGameBackground() {
-    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(0.5);
+    let scale = 1920/gameState.sceneWidth;
+    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(scale);
 
     this.mountainGroup = this.add.group();
     this.firstMountain = this.mountainGroup.create(0, gameState.sceneHeight, 'mountains').setScale(0.5).setOrigin(0, 1);
     this.mountainWidth = this.firstMountain.displayWidth;
-    createPlatform(this.mountainGroup, this.mountainWidth, 'mountains');
+    createPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 0);
+    createPlatform(this.mountainGroup, this.mountainWidth, 'mountains', this.mountainWidth);
+    createPlatform(this.mountainGroup, this.mountainWidth, 'mountains', this.mountainWidth*2);
 
     this.plateauGroup = this.add.group();
     this.firstPlateau = this.plateauGroup.create(0, gameState.sceneHeight, 'plateau').setScale(0.5).setOrigin(0, 1);
     this.plateauWidth = this.firstPlateau.displayWidth;
-    createPlatform(this.plateauGroup, this.plateauWidth, 'plateau');
+    createPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 0);
+    createPlatform(this.plateauGroup, this.plateauWidth, 'plateau', this.plateauWidth);
+    createPlatform(this.plateauGroup, this.plateauWidth, 'plateau', this.plateauWidth*2);
 
     this.groundGroup = this.physics.add.group();
     this.first = this.groundGroup.create(0, this.scale.height, 'ground')
@@ -404,7 +409,9 @@ class Game extends Phaser.Scene {
     this.groundHeight = this.first.displayHeight;
     this.first.setSize(this.groundWidth * 2, this.groundHeight - 50);
 
-    createPlatform(this.groundGroup, this.groundWidth, 'ground');
+    createPlatform(this.groundGroup, this.groundWidth, 'ground', 0);
+    createPlatform(this.groundGroup, this.groundWidth, 'ground', this.groundWidth);
+    createPlatform(this.groundGroup, this.groundWidth, 'ground', this.groundWidth * 2);
   }
 
 
@@ -475,8 +482,8 @@ class Game extends Phaser.Scene {
     var f = (delta / (1000 / 60)); // 1000 ms / 60fps
 
     moveBackgroundPlatform(this.mountainGroup, this.mountainWidth, 'mountains', 1*f);
-    moveBackgroundPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 2.8*f);
-    moveBackgroundPlatform(this.groundGroup, this.groundWidth, 'ground', 9*f);
+    moveBackgroundPlatform(this.plateauGroup, this.plateauWidth, 'plateau', 3*f);
+    moveBackgroundPlatform(this.groundGroup, this.groundWidth, 'ground', 5*f);
 
     if (this.health <= 0) {
       fetchScoreData.postScores(fetchScoreData.apiUrl, { user: gameState.playerName, wallet: gameState.wallet, score: gameState.score });
@@ -502,13 +509,13 @@ class Game extends Phaser.Scene {
 
     this.timer += delta;
     if (this.timer >= 5000) {
-      this.createMissile(415, 'missile');
+      this.createMissile(gameState.sceneHeight - (520-415), 'missile');
       this.timer = 0;
     }
 
     this.secondTimer += delta;
     if (this.secondTimer >= 7000) {
-      this.createMissile(300, 'missile2');
+      this.createMissile(gameState.sceneHeight - (520-300), 'missile2');
       this.secondTimer = 0;
     }
 

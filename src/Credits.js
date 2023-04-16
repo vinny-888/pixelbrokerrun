@@ -29,7 +29,7 @@ class Credits extends Phaser.Scene {
     this.hoverSound = this.sound.add('hoverBtnSound', { loop: false });
     this.clickSound = this.sound.add('clickBtnSound', { loop: false });
 
-    this.add.image(0, 0, 'sky').setOrigin(0).setScale(0.5);
+    this.add.image(0, 0, 'sky').setOrigin(0).setScale(1920/gameState.sceneWidth);
     this.add.image(this.width / 2, this.height / 2, 'logo2').setAlpha(0).setScale(1.7);
     this.add.rectangle(this.width / 2, this.height / 2,
       (this.width * 3) / 4, (this.height * 3) / 4, 0x000000, 0.3);

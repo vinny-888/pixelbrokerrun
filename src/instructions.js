@@ -29,7 +29,7 @@ class Instructions extends Phaser.Scene {
 
     playStopAudio(gameState.music, gameState.theme1);
 
-    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(0.5);
+    this.add.image(gameState.sceneWidth / 2, gameState.sceneHeight / 2, 'sky').setScale(1920/gameState.sceneWidth);
 
     this.add.rectangle(0, 0, gameState.sceneWidth,
       gameState.sceneHeight, 0x000000, 0.2).setOrigin(0);

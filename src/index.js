@@ -10,11 +10,18 @@ import LeaderBoard from './leaderBoard';
 import Instructions from './instructions';
 import GesturesPlugin from 'phaser3-rex-plugins/plugins/gestures-plugin.js';
 
+let landscape = false;
+
+if (window.innerHeight < window.innerWidth) {
+  landscape = true;
+  console.log('Landscape', window.innerHeight, window.innerWidth);
+}
+
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
-  width: 960,
-  height: 520,
+  width: window.innerWidth,
+  height: window.innerHeight,
   physics: {
     default: 'arcade',
     arcade: {
@@ -26,8 +33,8 @@ const config = {
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 960,
-    height: 520,
+    width: window.innerWidth,
+    height: window.innerHeight,
   },
   dom: {
     createContainer: true,
