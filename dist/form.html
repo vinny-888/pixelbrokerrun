@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phaser Form</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      height: 100vh;
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .name-form {
+      padding: 5px;
+      background-color: #5bc0de;
+      border-radius: 30px;
+      margin-bottom: 5px;
+    }
+
+    .name-form input {
+      padding: 10px 20px;
+      font-size: 20px;
+      width: 100%;
+      border-radius: 30px;
+      outline: none;
+      border: none;
+      font-family: 'Akaya Telivigala', cursive;
+    }
+    .centered{
+      text-align: center;
+      margin: 0 auto;
+    }
+    #submit{
+      background-color: #5cc0de;
+    }
+  </style>
+</head>
+<body>
+  <div class="centered">
+    <br><br>
+    <div class='name-form'>
+      <input type='text' name='name' placeholder='Username' maxlength="20" required>
+    </div>
+    <div class='name-form'>
+      <input type='text' name='wallet' placeholder='ETH Address' maxlength="42">
+    </div>
+    <div class='name-form'>
+      <input id="submit" type='button' name='submit' value='Submit'>
+    </div>
+  </div>
+</body>
+</html>
