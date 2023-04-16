@@ -27,21 +27,21 @@ class Credits extends Phaser.Scene {
       stroke: strokeColor,
     });
 
-    positionWords(this.width / 2, this.height / 2 - 100, 'DEVELOPED BY:', '#ff0000', '#ffffff').setOrigin(1, 0.5);
+    positionWords(this.width / 2 - 150, this.height / 2 - 100, 'Forked from:', '#ff0000', '#ffffff').setOrigin(1, 0.5);
 
-    positionWords(this.width / 2 + 20, this.height / 2 - 100, 'cbgb', '#ffffff', '#0275d8').setOrigin(0, 0.5);
+    positionWords(this.width / 2 -120, this.height / 2 - 100, 'github.com/RNtaate/Endless-Runner', '#ffffff', '#0275d8').setOrigin(0, 0.5);
 
-    positionWords(this.width / 2, this.height / 2, 'BUILT WITH: ', '#ff0000', '#ffffff').setOrigin(1, 0.5);
+    positionWords(this.width / 2 - 150, this.height / 2, 'Reimagined By: ', '#ff0000', '#ffffff').setOrigin(1, 0.5);
 
-    positionWords(this.width / 2 + 20, this.height / 2, 'Phaser 3', '#ffffff', '#0275d8').setOrigin(0, 0.5);
+    positionWords(this.width / 2 -120, this.height / 2, 'cbgb', '#ffffff', '#0275d8').setOrigin(0, 0.5);
 
-    positionWords(this.width / 2, this.height / 2 + 100, 'ASSETS SOURCE: ', '#ff0000', '#ffffff').setOrigin(1, 0.5);
+    positionWords(this.width / 2 - 150, this.height / 2 + 100, 'Graphics: ', '#ff0000', '#ffffff').setOrigin(1, 0.5);
 
-    const assetsList = positionWords(this.width / 2 + 20, this.height / 2 + 100, 'Stable Diffusion', '#ffffff', '#0275d8').setOrigin(0, 0.5);
+    const assetsList = positionWords(this.width / 2 -120, this.height / 2 + 100, 'Stable Diffusion', '#ffffff', '#0275d8').setOrigin(0, 0.5);
 
-    positionWords(this.width / 2 + 20, assetsList.y + 30, 'https://aamatniekss.itch.io', '#ffffff', '#0275d8').setOrigin(0, 0.5);
+    positionWords(this.width / 2 -120, assetsList.y + 30, 'aamatniekss.itch.io', '#ffffff', '#0275d8').setOrigin(0, 0.5);
 
-    positionWords(this.width / 2 + 20, assetsList.y + 60, 'https://free-stock-music.com', '#ffffff', '#0275d8').setOrigin(0, 0.5);
+    positionWords(this.width / 2 -120, assetsList.y + 60, 'free-stock-music.com', '#ffffff', '#0275d8').setOrigin(0, 0.5);
 
     const backBtn = new CustomButton(this, 100, this.height - 30, 'mainMenu', 'mainMenuHover');
     this.add.existing(backBtn);
