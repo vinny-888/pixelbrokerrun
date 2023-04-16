@@ -122,11 +122,29 @@ class Preload extends Phaser.Scene {
   create() {
     this.add.image(this.width / 2, this.height / 2, 'logo').setScale(1.7);
 
-    this.message = this.add.text(this.scale.width / 2 + 100, 30, 'PRESS "ENTER" TO CONTINUE TO MAIN MENU', {
+    this.message = this.add.text(this.scale.width / 2 + 100, 30, 'Tap or Press "Enter" to play!', {
       fontSize: '25px',
       fill: '#ffffff',
       fontFamily: '"Akaya Telivigala"',
     }).setOrigin(0.3);
+
+    var tap = this.scene.scene.rexGestures.add.tap(this.game, {
+      enable: true,
+    
+      // time: 250,
+      // tapInterval: 200,
+      // threshold: 9,
+      // tapOffset: 10,
+    
+      // taps: undefined,
+      // minTaps: undefined,
+      // maxTaps: undefined,
+    });
+
+    tap.on('tap', function(tap, gameObject, lastPointer){
+      this.scene.stop();
+      this.scene.start('Menu');
+    }, this);
 
     this.message.setAlpha(0);
 

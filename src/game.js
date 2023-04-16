@@ -58,10 +58,31 @@ class Game extends Phaser.Scene {
     // this.missileScore = 0;
     this.missileScoreCombo = 0;
     this.jumping = false;
+    this.tapped = false;
+  }
+
+  resize() {
+    var canvas = this.game.canvas, width = window.innerWidth, height = window.innerHeight;
+    var wratio = width / height, ratio = canvas.width / canvas.height;
+
+    if (wratio < ratio) {
+        canvas.style.width = width + "px";
+        canvas.style.height = (width / ratio) + "px";
+    } else {
+        canvas.style.width = (height * ratio) + "px";
+        canvas.style.height = height + "px";
+    }
   }
 
   // Start of create function
   create() {
+    window.addEventListener('resize', this.resize);
+    this.resize();
+
+    this.input.on('pointerdown', function(pointer, localX, localY, event){ 
+      this.tapped = true;
+    }, this);
+
     this.gameTheme = this.sound.add('theme2', { loop: true });
     this.gameTheme.volume = 0.5;
 
@@ -119,8 +140,6 @@ class Game extends Phaser.Scene {
     this.player.body.setCollideWorldBounds();
     this.player.body.setSize(20, 48);
     this.player.body.setOffset(40, 30);
-    // this.player.setSize(this.player.width * 2.5, this.player.height * 2.5);
-    // this.player.setOffset(this.player.width / 2 - 20, 30);
 
     this.createAnimations('run', 'player', 18, 23, -1, 16);
 
@@ -488,7 +507,8 @@ class Game extends Phaser.Scene {
       this.secondTimer = 0;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || this.tapped) {
+      this.tapped = false;
       if (this.player.body.touching.down || (this.jump < this.jumpTimes && (this.jump > 0))) {
         this.player.setVelocityY(-400);
         this.jumpSound.play();

@@ -7,8 +7,21 @@ class Options extends Phaser.Scene {
   constructor() {
     super({ key: 'Options' });
   }
+  resize() {
+    var canvas = this.game.canvas, width = window.innerWidth, height = window.innerHeight;
+    var wratio = width / height, ratio = canvas.width / canvas.height;
 
+    if (wratio < ratio) {
+        canvas.style.width = width + "px";
+        canvas.style.height = (width / ratio) + "px";
+    } else {
+        canvas.style.width = (height * ratio) + "px";
+        canvas.style.height = height + "px";
+    }
+  }
   create() {
+    window.addEventListener('resize', this.resize);
+    this.resize();
     this.width = this.scale.width;
     this.height = this.scale.height;
 
