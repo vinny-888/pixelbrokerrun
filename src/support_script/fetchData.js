@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 
-const apiUrl = 'https://cb-tpl.glitch.me/scores';
+const apiUrl = 'https://cb-tpl.glitch.me/scorescomp';
 const apiKey = 'GRzadLatZp2NcDHxIoxp';
 
 const postScores = async (url, data = {}) => {
