@@ -55,7 +55,7 @@ class Game extends Phaser.Scene {
     this.timer = 0;
     this.secondTimer = 0;
     this.healthTimer = 0;
-    this.missileScore = 0;
+    // this.missileScore = 0;
     this.missileScoreCombo = 0;
     this.jumping = false;
   }
@@ -265,13 +265,13 @@ class Game extends Phaser.Scene {
         }
         if (missile.y < 350) {
           let score = 5 * this.missileScoreCombo;
-          this.missileScore += score;
-          this.health += 10;
+          // this.missileScore += score;
+          this.health += 5;
           message = '+'+score + (this.missileScoreCombo > 1 ? ' ' + this.missileScoreCombo + 'x Combo!' : '');
         } else {
           let score = 2 * this.missileScoreCombo;
-          this.missileScore += score;
-          this.health += 10;
+          // this.missileScore += score;
+          this.health += 2;
           message = '+'+ score + (this.missileScoreCombo > 1 ? ' ' + this.missileScoreCombo + 'x Combo!': '');
         }
         if(this.missileScoreCombo > 1){
@@ -462,10 +462,10 @@ class Game extends Phaser.Scene {
       this.scene.start('GameOver');
     }
 
-    if (this.missileScore >= 1) {
-      this.health += 1;
-      this.missileScore -= 1;
-    }
+    // if (this.missileScore >= 1) {
+    //   this.health += 1;
+    //   this.missileScore -= 1;
+    // }
 
     this.player.anims.play('run', true);
     this.birdGroup.children.iterate((child) => {
