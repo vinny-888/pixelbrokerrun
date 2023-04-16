@@ -43,12 +43,12 @@ class Boot extends Phaser.Scene {
   }
 
   submit(){
-    const name = this.form.getChildByName('name');
+    // const name = this.form.getChildByName('name');
     const wallet = this.form.getChildByName('wallet');
-    if (name.value.trim() !== '') {
-      localStorage.setItem("pbr_name", name.value.trim());
+    if (wallet.value.trim() !== '') {
+      // localStorage.setItem("pbr_name", name.value.trim());
       localStorage.setItem("pbr_wallet", wallet.value.trim());
-      gameState.playerName = name.value.trim();
+      gameState.playerName = wallet.value.trim();
       gameState.wallet = wallet.value.trim();
       this.scene.stop();
       this.scene.start('Preload');
@@ -69,20 +69,20 @@ class Boot extends Phaser.Scene {
       fontFamily: 'Akaya Telivigala',
     }).setOrigin(0.5);
 
-    this.add.text(gameState.sceneWidth / 2, gameState.sceneHeight / 2 - 100, 'Enter name & wallet (optional) and press "ENTER"', {
+    this.add.text(gameState.sceneWidth / 2, gameState.sceneHeight / 2 - 100, 'Enter wallet and press "ENTER"', {
       fontSize: '30px',
       fill: '#ffffff',
       fontFamily: 'Akaya Telivigala',
     }).setOrigin(0.5);
 
     this.form = this.add.dom(gameState.sceneWidth / 2, gameState.sceneHeight / 2).createFromCache('form');
-    const name = this.form.getChildByName('name');
+    // const name = this.form.getChildByName('name');
     const wallet = this.form.getChildByName('wallet');
     const submit = this.form.getChildByName('submit');
 
-    if(localStorage.getItem("pbr_name")){
-      name.value = localStorage.getItem("pbr_name");
-    }
+    // if(localStorage.getItem("pbr_name")){
+    //   name.value = localStorage.getItem("pbr_name");
+    // }
     if(localStorage.getItem("pbr_name")){
       wallet.value = localStorage.getItem("pbr_wallet");
     }
