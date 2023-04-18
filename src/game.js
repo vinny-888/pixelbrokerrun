@@ -58,18 +58,23 @@ class Game extends Phaser.Scene {
     super({ key: 'Game' });
     this.maxHealth = 300;
     this.timer = 0;
-    this.bulletTimer = 0;
-    this.largeTimer = 0;
     this.secondTimer = 0;
     this.healthTimer = 0;
     // this.missileScore = 0;
-    this.missileScoreCombo = 0;
+    this.missileScoreCombo = 1;
     this.jumping = false;
     this.tapped = false;
     this.bullets = 3;
     this.large = false;
     this.largeScale = 3;
     this.currentScale = 1.5;
+    this.activeJump = 'jump1';
+
+    // powerups
+    this.bulletTimer = 0;
+    this.largeTimer = 0;
+    this.trippleJumpTimer = 0;
+    this.speedJumpTimer = 0;
   }
 
   resize(canvas) {
@@ -176,7 +181,11 @@ class Game extends Phaser.Scene {
 
     this.createAnimations('run', 'player', 18, 23, -1, 16);
 
-    this.createAnimations('jump', 'player', 18, 23, -1, 16);
+    this.createAnimations('jump1', 'player', 18, 23, -1, 16);
+    this.createAnimations('jump2', 'player', 24, 29, -1, 16);
+    // this.createAnimations('jump3', 'player', 30, 35, -1, 16);
+    // this.createAnimations('jump4', 'player', 36, 41, -1, 16);
+    this.createAnimations('jump3', 'player', 42, 48, -1, 16);
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.jumpTimes = 2;
@@ -210,20 +219,27 @@ class Game extends Phaser.Scene {
     this.powerUp2Group = this.physics.add.group();
     this.powerUp3Group = this.physics.add.group();
     this.powerUp4Group = this.physics.add.group();
+    this.powerUp5Group = this.physics.add.group();
+    this.powerUp6Group = this.physics.add.group();
 
     this.ethGroup = this.physics.add.group();
     this.dodgeGroup = this.physics.add.group();
     this.btcGroup = this.physics.add.group();
     const createCoin = () => {
       let random = Math.random();
-      if(random <= 0.025){
+      let powerups = 0.2/6;
+      if(random <= powerups){
         this.createBirdDrop(this.powerUp1Group, 'power_up_1');
-      } else if(random <= 0.05){
+      } else if(random <= powerups*2){
         this.createBirdDrop(this.powerUp2Group, 'power_up_2');
-      } else if(random <= 0.075){
+      } else if(random <= powerups*3){
         this.createBirdDrop(this.powerUp3Group, 'power_up_3');
-      } else if(random <= 0.1){
+      } else if(random <= powerups*4){
         this.createBirdDrop(this.powerUp4Group, 'power_up_4');
+      } else if(random <= powerups*5){
+        this.createBirdDrop(this.powerUp5Group, 'power_up_5');
+      } else if(random <= powerups*6){
+        this.createBirdDrop(this.powerUp6Group, 'power_up_6');
       } else if(random <= 0.2){
         this.createBirdDrop(this.ethGroup, 'btc');
       } else if(random <= 0.5){
@@ -246,6 +262,14 @@ class Game extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.powerUp4Group, this.groundGroup, (powerUp) => {
+      powerUp.setVelocityX(-200);
+    });
+
+    this.physics.add.collider(this.powerUp5Group, this.groundGroup, (powerUp) => {
+      powerUp.setVelocityX(-200);
+    });
+
+    this.physics.add.collider(this.powerUp6Group, this.groundGroup, (powerUp) => {
       powerUp.setVelocityX(-200);
     });
 
@@ -288,6 +312,22 @@ class Game extends Phaser.Scene {
       gameState.score += 10;
       this.scoreValue.setText(`${gameState.score}`);
       this.hoveringTextScore(player, '+10 Crypto!', '#0000ff', '#FFFF00');
+    });
+
+    this.physics.add.overlap(this.player, this.powerUp5Group, (player, powerup) => {
+      this.pickCoin.play();
+      powerup.destroy();
+      
+      this.trippleJumpTimer = 10000;
+      this.hoveringTextScore(player, 'Tripple Jump!', '#0000ff', '#FFFF00');
+    });
+
+    this.physics.add.overlap(this.player, this.powerUp6Group, (player, powerup) => {
+      this.pickCoin.play();
+      powerup.destroy();
+      
+      this.speedJumpTimer = 10000;
+      this.hoveringTextScore(player, 'Speed Jump!', '#0000ff', '#FFFF00');
     });
 
     this.physics.add.overlap(this.player, this.dodgeGroup, (player, singleCoin) => {
@@ -349,7 +389,7 @@ class Game extends Phaser.Scene {
       if(!this.large){
         this.health -= 10;
         this.hoveringTextScore(player, '-10 '+(this.missileScoreCombo > 1 ? this.missileScoreCombo+'x Combo Lost!' : ''), '#CCCC00', '#800080');
-        this.missileScoreCombo = 0;
+        this.missileScoreCombo = 1;
       } else {
         this.health += 1;
         this.hoveringTextScore(player, '+1 ', '#CCCC00', '#800080');
@@ -493,7 +533,7 @@ class Game extends Phaser.Scene {
         }
 
         
-        this.missileScoreCombo = 0;
+        this.missileScoreCombo = 1;
         missile.destroy();
         player.setVelocityY(0);
 
@@ -527,6 +567,14 @@ class Game extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.powerUp4Group, this.boundGroup, (powerup) => {
+      powerup.destroy();
+    });
+
+    this.physics.add.collider(this.powerUp5Group, this.boundGroup, (powerup) => {
+      powerup.destroy();
+    });
+
+    this.physics.add.collider(this.powerUp6Group, this.boundGroup, (powerup) => {
       powerup.destroy();
     });
 
@@ -617,16 +665,18 @@ class Game extends Phaser.Scene {
   createBirdDrop(group, texture) {
     if (this.birdGroup.getLength() >= 2) {
       const child = this.birdGroup.getChildren()[Phaser.Math.Between(0,
-        this.birdGroup.getLength() - 1)];
-      const drop = group.create(child.x, child.y, texture).setScale(0.075);
-      if (texture === 'spike') {
-        drop.setScale(0.2);
+      this.birdGroup.getLength() - 1)];
+      if(child.x > 300){
+        const drop = group.create(child.x, child.y, texture).setScale(0.075);
+        if (texture === 'spike') {
+          drop.setScale(0.2);
+        }
+        drop.setGravityY(700);
+        drop.setGravityX(0);
+        drop.setDepth(6);
+        drop.setBounce(1);
+        drop.setSize(drop.width - 200, drop.height - 200);
       }
-      drop.setGravityY(700);
-      drop.setGravityX(0);
-      drop.setDepth(6);
-      drop.setBounce(1);
-      drop.setSize(drop.width - 200, drop.height - 200);
     }
   }
 
@@ -724,6 +774,14 @@ class Game extends Phaser.Scene {
 
     this.timer += delta;
     this.bulletTimer += delta;
+    this.trippleJumpTimer -= delta;
+    if(this.trippleJumpTimer < 0){
+      this.trippleJumpTimer = 0;
+    }
+    this.speedJumpTimer -= delta;
+    if(this.speedJumpTimer < 0){
+      this.speedJumpTimer = 0;
+    }
 
     if(this.large){
       this.currentScale += 0.01;
@@ -758,14 +816,38 @@ class Game extends Phaser.Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || this.tapped) {
       this.tapped = false;
-      if (this.player.body.touching.down || (this.jump < this.jumpTimes && (this.jump > 0))) {
-        this.player.setVelocityY(-400 * (this.large ? 1.5 : 1));
+      let jumps = this.jumpTimes;
+      if(this.trippleJumpTimer > 0){
+        jumps = this.jumpTimes + 1;
+      }
+      if (this.player.body.touching.down || (this.jump < jumps && (this.jump > 0))) {
+        let speed = -400;
+        if(this.speedJumpTimer > 0){
+          speed = -800;
+        }
+        this.player.setVelocityY(speed * (this.large ? 1.5 : 1));
         this.jumpSound.play();
+
+        if(this.activeJump == 'jump1'){
+          let random = Math.random();
+          if(random <= 0.5){
+            this.activeJump = 'jump2';
+          } else if(random <= 1){
+            this.activeJump = 'jump3';
+          } 
+        }
 
         if ((this.player.body.touching.down)) {
           this.jump = 0;
+          this.activeJump = 'jump1';
         }
         this.jump += 1;
+
+        // else if(random <= 0.8){
+        //   this.activeJump = 'jump4';
+        // } else if(random <= 1){
+        //   this.activeJump = 'jump5';
+        // }
       }
     }
     if(this.cursors.space.isDown){
@@ -778,7 +860,8 @@ class Game extends Phaser.Scene {
     }
 
     if (!this.player.body.touching.down) {
-      this.player.anims.play('jump', true);
+      
+      this.player.anims.play(this.activeJump, true);
     }
 
     // if (this.cursors.down.isDown) {

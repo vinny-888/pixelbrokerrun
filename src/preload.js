@@ -103,6 +103,8 @@ class Preload extends Phaser.Scene {
     this.load.image('power_up_2', prefix+'/assets/power_up_2.png');
     this.load.image('power_up_3', prefix+'/assets/power_up_3.png');
     this.load.image('power_up_4', prefix+'/assets/power_up_4.png');
+    this.load.image('power_up_5', prefix+'/assets/power_up_5.png');
+    this.load.image('power_up_6', prefix+'/assets/power_up_6.png');
     this.load.image('spike', prefix+'/assets/spike.png');
     this.load.image('bullet', prefix+'/assets/bullet.png');
     this.load.image('missile', prefix+'/assets/missile.png');
