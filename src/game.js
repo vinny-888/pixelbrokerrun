@@ -823,7 +823,7 @@ class Game extends Phaser.Scene {
       if (this.player.body.touching.down || (this.jump < jumps && (this.jump > 0))) {
         let speed = -400;
         if(this.speedJumpTimer > 0){
-          speed = -800;
+          speed = -600;
         }
         this.player.setVelocityY(speed * (this.large ? 1.5 : 1));
         this.jumpSound.play();
@@ -864,11 +864,11 @@ class Game extends Phaser.Scene {
       this.player.anims.play(this.activeJump, true);
     }
 
-    // if (this.cursors.down.isDown) {
-    //   if (!this.player.body.touching.down) {
-    //     this.player.setGravityY(1300);
-    //   }
-    // }
+    if (this.cursors.down.isDown && this.speedJumpTimer > 0) {
+      if (!this.player.body.touching.down) {
+        this.player.setGravityY(1600);
+      }
+    }
 
     if (this.player.body.touching.down) {
       this.player.setGravityY(800);
