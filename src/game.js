@@ -56,6 +56,7 @@ const moveBackgroundPlatform = (group, platformWidth, myTexture, scrollFactor) =
 class Game extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' });
+    this.maxHealth = 300;
     this.timer = 0;
     this.bulletTimer = 0;
     this.largeTimer = 0;
@@ -104,7 +105,7 @@ class Game extends Phaser.Scene {
     this.addSoundEffects();
 
     gameState.score = 0;
-    this.health = 300;
+    this.health = this.maxHealth;
 
     this.scoreText = this.add.text(gameState.sceneWidth - 200, 25, 'Crypto: ', {
       fontSize: '40px',
@@ -207,16 +208,22 @@ class Game extends Phaser.Scene {
 
     this.powerUp1Group = this.physics.add.group();
     this.powerUp2Group = this.physics.add.group();
+    this.powerUp3Group = this.physics.add.group();
+    this.powerUp4Group = this.physics.add.group();
 
     this.ethGroup = this.physics.add.group();
     this.dodgeGroup = this.physics.add.group();
     this.btcGroup = this.physics.add.group();
     const createCoin = () => {
       let random = Math.random();
-      if(random <= 0.05){
+      if(random <= 0.025){
         this.createBirdDrop(this.powerUp1Group, 'power_up_1');
-      } else if(random <= 0.1){
+      } else if(random <= 0.05){
         this.createBirdDrop(this.powerUp2Group, 'power_up_2');
+      } else if(random <= 0.075){
+        this.createBirdDrop(this.powerUp3Group, 'power_up_3');
+      } else if(random <= 0.1){
+        this.createBirdDrop(this.powerUp4Group, 'power_up_4');
       } else if(random <= 0.2){
         this.createBirdDrop(this.ethGroup, 'btc');
       } else if(random <= 0.5){
@@ -231,6 +238,14 @@ class Game extends Phaser.Scene {
     });
 
     this.physics.add.collider(this.powerUp2Group, this.groundGroup, (powerUp) => {
+      powerUp.setVelocityX(-200);
+    });
+
+    this.physics.add.collider(this.powerUp3Group, this.groundGroup, (powerUp) => {
+      powerUp.setVelocityX(-200);
+    });
+
+    this.physics.add.collider(this.powerUp4Group, this.groundGroup, (powerUp) => {
       powerUp.setVelocityX(-200);
     });
 
@@ -258,6 +273,21 @@ class Game extends Phaser.Scene {
       this.large = true;
       this.largeTimer = 10000;
       this.hoveringTextScore(player, 'Mega PixelBroker!', '#0000ff', '#FFFF00');
+    });
+
+    this.physics.add.overlap(this.player, this.powerUp3Group, (player, powerup) => {
+      this.pickCoin.play();
+      powerup.destroy();
+      this.health += 10;
+      this.hoveringTextScore(player, '+10 Health!', '#0000ff', '#FFFF00');
+    });
+
+    this.physics.add.overlap(this.player, this.powerUp4Group, (player, powerup) => {
+      this.pickCoin.play();
+      powerup.destroy();
+      gameState.score += 10;
+      this.scoreValue.setText(`${gameState.score}`);
+      this.hoveringTextScore(player, '+10 Crypto!', '#0000ff', '#FFFF00');
     });
 
     this.physics.add.overlap(this.player, this.dodgeGroup, (player, singleCoin) => {
@@ -492,6 +522,14 @@ class Game extends Phaser.Scene {
       powerup.destroy();
     });
 
+    this.physics.add.collider(this.powerUp3Group, this.boundGroup, (powerup) => {
+      powerup.destroy();
+    });
+
+    this.physics.add.collider(this.powerUp4Group, this.boundGroup, (powerup) => {
+      powerup.destroy();
+    });
+
     this.physics.add.collider(this.dodgeGroup, this.boundGroup, (singleCoin) => {
       singleCoin.destroy();
     });
@@ -646,6 +684,10 @@ class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
+
+    if(this.health > this.maxHealth){
+      this.health = this.maxHealth;
+    }
 
     // at 60FPS in fixed time of 1/60 sec per step
     var f = (delta / (1000 / 60)); // 1000 ms / 60fps
