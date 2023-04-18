@@ -24,7 +24,7 @@ const createPlatform = (group, spriteWidth, myTexture, dist = 0) => {
 };
 
 const updatePlatform = (group, spriteWidth, myTexture, dist = 0) => {
-  const child = group.get(spriteWidth*2, gameState.sceneHeight, myTexture);
+  const child = group.get(spriteWidth*2-dist, gameState.sceneHeight, myTexture);
   child.setVisible(true);
   child.setActive(true);
   switch (myTexture) {
