@@ -71,6 +71,7 @@ class GameOver extends Phaser.Scene {
       gameState.theme1.stop();
       this.scene.stop();
       this.scene.start('Game');
+
     });
   }
 }

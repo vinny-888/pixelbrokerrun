@@ -92,6 +92,19 @@ class Preload extends Phaser.Scene {
       frameWidth: 96,
       frameHeight: 96
     });
+
+    
+
+    let enemies = [4672,2501,8756,3091,9018,4855,6640,5161,4871,96]
+
+    enemies.forEach((id, index)=>{
+      this.load.spritesheet('enemy_'+index, 'https://cb-media.sfo3.cdn.digitaloceanspaces.com/pixelbrokers/current/sprites/'+id+'.png', 
+    {
+      frameWidth: 96,
+      frameHeight: 96
+    });
+    })
+    
     //{ frameWidth: 96, frameHeight: 96 });
 
     this.load.spritesheet('bird', prefix+'/assets/birdSprite.png', { frameWidth: 290, frameHeight: 300 });

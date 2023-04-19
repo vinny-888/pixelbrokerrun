@@ -213,6 +213,34 @@ class Game extends Phaser.Scene {
       loop: true,
     });
 
+    const createEnemy1 = () => {
+      let enemyId = Math.round(Math.random() * 9);
+      const enemy = this.enemy1Group.create(gameState.sceneWidth + 100, gameState.sceneHeight - 170, 'enemy_'+enemyId);
+      enemy.setVelocityX(-200);
+      enemy.setScale(3);
+      enemy.setDepth(6);
+      enemy.body.setSize(20, 48);
+      enemy.body.setOffset(40, 30);
+      enemy.lives = 3;
+      // enemy.setSize(enemy.width, missile.height - 300);
+      // missile.setOffset(0, 150);
+    }
+
+    this.enemy1CreationTime = this.time.addEvent({
+      callback: createEnemy1,
+      delay: Phaser.Math.Between(30000, 40000),
+      callbackScope: this,
+      loop: true,
+    });
+
+    this.enemy1Group = this.physics.add.group();
+
+    for(let i=0; i< 10; i++){
+      this.createAnimations('enemy_fly_'+i, 'enemy_'+i, 6, 11, -1, 16);
+    }
+    
+
+
     // Coins SECTION
 
     this.powerUp1Group = this.physics.add.group();
@@ -409,11 +437,80 @@ class Game extends Phaser.Scene {
     this.createAnimations('idle', 'explosion', 15, 15, -1, 1);
     this.explosion.play('idle', true);
 
+    this.physics.add.collider(this.bulletGroup, this.enemy1Group, (bullet, enemy) => {
+      bullet.destroy();
+      enemy.lives--;
+      if(enemy.lives == 0){
+        enemy.destroy();
+        this.explodeSound.play();
+        this.explosion.setScale(3);
+        this.explosion.x = bullet.x + 30;
+        this.explosion.y = bullet.y + 30;
+        this.explosion.play('explode', true);
+        this.killMissile.play();
+        gameState.score += 25
+        this.scoreValue.setText(`${gameState.score}`);
+        // let score = 2 * this.missileScoreCombo;
+        this.hoveringTextScore(bullet, 'GM +25 Cypto!', '#000000', '#00ff00');
+      } else {
+        this.explodeSound.play();
+        this.explosion.setScale(1);
+        this.explosion.x = bullet.x+20;
+        this.explosion.y = bullet.y;
+        this.explosion.play('explode', true);
+        this.killMissile.play();
+      }
+    });
+
+    this.physics.add.overlap(this.player, this.enemy1Group, (player, enemy) => {
+      if (player.body.touching.down && enemy.body.touching.up && this.jumping) {
+        player.setVelocityY(-300);
+        enemy.setVelocityY(300);
+        enemy.setVelocityX(300);
+        // enemy.destroy();
+        this.explodeSound.play();
+        this.explosion.setScale(3);
+        this.explosion.x = enemy.x + 30;
+        this.explosion.y = enemy.y + 30;
+        this.explosion.play('explode', true);
+        this.killMissile.play();
+        gameState.score += 25
+        this.scoreValue.setText(`${gameState.score}`);
+        // let score = 2 * this.missileScoreCombo;
+        this.hoveringTextScore(player, 'GM +25 Cypto!', '#000000', '#00ff00');
+      } else {
+
+        if(this.large){
+          this.explodeSound.play();
+          this.explosion.setScale(3);
+          this.explosion.x = enemy.x + 30;
+          this.explosion.y = enemy.y + 30;
+          this.explosion.play('explode', true);
+          this.killMissile.play();
+          gameState.score += 25
+          this.scoreValue.setText(`${gameState.score}`);
+          // let score = 2 * this.missileScoreCombo;
+          this.hoveringTextScore(player, 'GM +25 Cypto!', '#000000', '#00ff00');
+        } else {
+          player.setVelocityY(-300);
+          this.health -= 50;
+          enemy.destroy();
+          this.explodeSound.play();
+          this.explosion.x = enemy.x + 30;
+          this.explosion.y = enemy.y + 30;
+          this.explosion.setScale(3);
+          this.explosion.play('explode', true);
+          this.hoveringTextScore(player, '-50 Health! WTF!'+(this.missileScoreCombo > 1 ? this.missileScoreCombo+'x Combo Lost!' : ''), '#CCCC00', '#FF0000');
+        }
+      }
+    });
+
     this.physics.add.collider(this.bulletGroup, this.missileGroup, (bullet, missile) => {
       console.log('Missile Hit');
       missile.destroy();
       bullet.destroy();
 
+      this.explosion.setScale(1);
       this.explodeSound.play();
       this.explosion.x = bullet.x;
       this.explosion.y = bullet.y;
@@ -431,6 +528,7 @@ class Game extends Phaser.Scene {
       spike.destroy();
       bullet.destroy();
 
+      this.explosion.setScale(1);
       this.explodeSound.play();
       this.explosion.x = bullet.x;
       this.explosion.y = bullet.y;
@@ -539,6 +637,7 @@ class Game extends Phaser.Scene {
 
         this.explosion.x = player.x;
         this.explosion.y = player.y;
+        this.explosion.setScale(1);
         this.explosion.play('explode', true);
       }
     });
@@ -549,6 +648,10 @@ class Game extends Phaser.Scene {
     this.boundGroup = this.physics.add.staticGroup();
     this.boundGroup.add(this.leftBound);
     this.boundGroup.add(this.bottomBound);
+
+    this.physics.add.collider(this.enemy1Group, this.boundGroup, (enemy) => {
+      enemy.destroy();
+    });
 
     this.physics.add.collider(this.birdGroup, this.boundGroup, (singleBird) => {
       singleBird.destroy();
@@ -751,6 +854,22 @@ class Game extends Phaser.Scene {
 
       this.gameTheme.stop();
       this.scene.stop();
+
+      this.missileScoreCombo = 1;
+      this.jumping = false;
+      this.tapped = false;
+      this.bullets = 3;
+      this.large = false;
+      this.largeScale = 3;
+      this.currentScale = 1.5;
+      this.activeJump = 'jump1';
+  
+      // powerups
+      this.bulletTimer = 0;
+      this.largeTimer = 0;
+      this.trippleJumpTimer = 0;
+      this.speedJumpTimer = 0;
+      
       this.scene.start('GameOver');
     }
 
@@ -762,6 +881,10 @@ class Game extends Phaser.Scene {
     this.player.anims.play('run', true);
     this.birdGroup.children.iterate((child) => {
       child.anims.play('fly', true);
+    });
+
+    this.enemy1Group.children.iterate((child, index) => {
+      child.anims.play('enemy_fly_'+index, true);
     });
 
     this.missileGroup.children.iterate((child) => {
@@ -825,6 +948,7 @@ class Game extends Phaser.Scene {
         if(this.speedJumpTimer > 0){
           speed = -600;
         }
+        this.jumping = true;
         this.player.setVelocityY(speed * (this.large ? 1.5 : 1));
         this.jumpSound.play();
 
@@ -860,7 +984,6 @@ class Game extends Phaser.Scene {
     }
 
     if (!this.player.body.touching.down) {
-      
       this.player.anims.play(this.activeJump, true);
     }
 
@@ -872,6 +995,7 @@ class Game extends Phaser.Scene {
 
     if (this.player.body.touching.down) {
       this.player.setGravityY(800);
+      this.jumping = false;
     }
   }
 }
