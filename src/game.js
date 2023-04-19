@@ -471,7 +471,7 @@ class Game extends Phaser.Scene {
         this.explodeSound.play();
         this.explosion.setScale(3);
         this.explosion.x = enemy.x + 30;
-        this.explosion.y = enemy.y + 30;
+        this.explosion.y = enemy.y;
         this.explosion.play('explode', true);
         this.killMissile.play();
         gameState.score += 25
@@ -486,7 +486,7 @@ class Game extends Phaser.Scene {
           this.explodeSound.play();
           this.explosion.setScale(3);
           this.explosion.x = enemy.x + 30;
-          this.explosion.y = enemy.y + 30;
+          this.explosion.y = enemy.y;
           this.explosion.play('explode', true);
           this.killMissile.play();
           gameState.score += 25
@@ -499,7 +499,7 @@ class Game extends Phaser.Scene {
           enemy.destroy();
           this.explodeSound.play();
           this.explosion.x = enemy.x + 30;
-          this.explosion.y = enemy.y + 30;
+          this.explosion.y = enemy.y;
           this.explosion.setScale(3);
           this.explosion.play('explode', true);
           this.hoveringTextScore(player, '-50 Health! WTF!'+(this.missileScoreCombo > 1 ? this.missileScoreCombo+'x Combo Lost!' : ''), '#CCCC00', '#FF0000');
