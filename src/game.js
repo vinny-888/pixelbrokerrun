@@ -481,6 +481,8 @@ class Game extends Phaser.Scene {
       } else {
 
         if(this.large){
+          enemy.setVelocityY(300);
+          enemy.setVelocityX(300);
           this.explodeSound.play();
           this.explosion.setScale(3);
           this.explosion.x = enemy.x + 30;
